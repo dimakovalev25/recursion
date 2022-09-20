@@ -47,28 +47,55 @@ let students = {
 	}
 };
 
-function getTotalProgress(data) {
-	let total = 0;
-	let students = 0;
 
-	for (let course of Object.values(data)) {
-		if (Array.isArray(course)) {
-			students += course.length;
+// function getTotalProgress(data) {
+// 	let total = 0;
+// 	let students = 0;
+	
+// 	for (let course of Object.values(data)) {
+// 		if (Array.isArray(course)) {
+// 			students += course.length;
 			
-			for (let i = 0; i < course.length; i++) {
-				total += course[i].progress;
-			}
-		} else {
-			for (let subcourse of Object.values(course)) {
-				students += subcourse.length;
+// 			for (let i = 0; i < course.length; i++) {
+// 				total += course[i].progress;
+// 			}
+// 		} else {
+// 			for (let subcourse of Object.values(course)) {
+// 				students += subcourse.length;
 				
-				for (let i = 0; i < subcourse.length; i++) {
-					total += subcourse[i].progress;
-				}
-			}
+// 				for (let i = 0; i < subcourse.length; i++) {
+// 					total += subcourse[i].progress;
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return total / students;
+// }
+
+// console.log(getTotalProgress(students));
+
+
+
+function getTotalProgressRec (data) {
+
+	if (Array.isArray(data)) {
+		let total = 0;
+				for (let i = 0; i < data.length; i++) {
+			total += data[i].progress;
 		}
+		return [total, data.length];
+
+	} else {
+
+		let total = [0, 0];
+		for (let subdata of Object.values(data)) {
+			const subDataArr = getTotalProgressRec(subdata);
+			total[0] += subDataArr[0]; 
+			total[1] += subDataArr[1]; 
+		}
+		return total;
 	}
-	return total / students;
 }
 
-console.log(getTotalProgress(students));
+const res = getTotalProgressRec(students);
+console.log(res[0]/res[1]);
